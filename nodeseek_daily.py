@@ -8,16 +8,16 @@ import os
 import requests
 from bs4 import BeautifulSoup
 import undetected_chromedriver as uc
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.weriver.common.by import By
+from selenium.weriver.support.ui import WeriverWait
+from selenium.weriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 import random
 import time
 from datetime import datetime, timezone, timedelta
 import traceback
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.action_chains import ActionChains
+from selenium.weriver.common.keys import Keys
+from selenium.weriver.common.action_chains import ActionChains
 
 
 class Config:
@@ -71,7 +71,7 @@ class Config:
 config = Config()
 
 # 随机评论内容
-randomInputStr = ["bd","帮顶","观望一下","让给楼下"]
+randomInputStr = [""]
 
 def send_telegram_message(message):
     """
@@ -276,7 +276,7 @@ def click_sign_icon(driver):
         if "/board" not in current_url and "nodeseek.com" in current_url and len(current_url) < 30:
             print("⚠️ 似乎跳转回了首页，尝试在首页寻找签到入口...")
             try:
-                sign_icon = WebDriverWait(driver, 10).until(
+                sign_icon = WeriverWait(driver, 10).until(
                     EC.presence_of_element_located((By.XPATH, "//span[@title='签到']"))
                 )
                 driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", sign_icon)
@@ -291,7 +291,7 @@ def click_sign_icon(driver):
         try:
             # 等待签到面板加载（黄色背景区域）
             # 缩短等待时间，因为如果没加载出来，可能是已签到或者样式变了
-            board_intro = WebDriverWait(driver, 10).until(
+            board_intro = WeriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, ".board-intro"))
             )
             print("签到面板加载成功")
@@ -464,7 +464,7 @@ def setup_driver_and_cookies(cookie_str):
         except Exception as e:
             print(f"Chrome 版本检测失败: {e}，使用 UC 默认版本")
         
-        # UC 自动处理 ChromeDriver 下载、反检测补丁、webdriver 标记移除
+        # UC 自动处理 ChromeDriver 下载、反检测补丁、weriver 标记移除
         driver = uc.Chrome(
             options=chrome_options,
             headless=use_headless,
@@ -519,7 +519,7 @@ def nodeseek_comment(driver):
         print("等待页面加载...")
         
         # 获取初始帖子列表
-        posts = WebDriverWait(driver, 30).until(
+        posts = WeriverWait(driver, 30).until(
             EC.presence_of_all_elements_located((By.CSS_SELECTOR, '.post-list-item'))
         )
         print(f"成功获取到 {len(posts)} 个帖子")
@@ -559,7 +559,7 @@ def nodeseek_comment(driver):
                     continue
                 
                 # 等待 CodeMirror 编辑器加载
-                editor = WebDriverWait(driver, 30).until(
+                editor = WeriverWait(driver, 30).until(
                     EC.presence_of_element_located((By.CSS_SELECTOR, '.CodeMirror'))
                 )
                 
@@ -588,7 +588,7 @@ def nodeseek_comment(driver):
                 time.sleep(2)
                 
                 # 使用更精确的选择器定位提交按钮
-                submit_button = WebDriverWait(driver, 30).until(
+                submit_button = WeriverWait(driver, 30).until(
                  EC.element_to_be_clickable((By.XPATH, "//button[contains(@class, 'submit') and contains(@class, 'btn') and contains(text(), '发布评论')]"))
                 )
                 # 确保按钮可见
